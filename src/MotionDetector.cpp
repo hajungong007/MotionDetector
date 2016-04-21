@@ -83,7 +83,9 @@ int main(int argc, char* argv[])
             //Create bounding rect of object
             //rect draw on origin image
             Rect mr= boundingRect(Mat(*itc));
-            rectangle(resizeBlurImg, mr, CV_RGB(255,0,0));
+            if ( mr.height > 12 ) {
+                rectangle(resizeBlurImg, mr, CV_RGB(255, 0, 0));
+            }
             ++itc;
         }
 
