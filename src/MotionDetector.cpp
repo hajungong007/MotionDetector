@@ -14,6 +14,7 @@ using namespace std;
 
 // Global variables
 Mat frame; //current frame
+Mat resizeImg;
 Mat resizeBlurImg;
 Mat binaryImg;
 Mat contourImg;
@@ -50,9 +51,9 @@ int main(int argc, char* argv[])
         }
 
         //Resize
-        resize(frame, resizeBlurImg, Size(frame.size().width/3, frame.size().height/3) );
+        resize(frame, resizeImg, Size(frame.size().width/2, frame.size().height/2) );
         //Blur
-        blur(resizeBlurImg, resizeBlurImg, Size(4,4) );
+        blur(resizeImg, resizeBlurImg, Size(4,4) );
         //Background subtraction
         pMOG2->apply(resizeBlurImg, fgMaskMOG2, -1);//,-0.5);
 
@@ -61,7 +62,7 @@ int main(int argc, char* argv[])
         //1 point delete
         //morphologyEx(fgMaskMOG2, fgMaskMOG2, CV_MOP_ERODE, element);
         morphologyEx(fgMaskMOG2, binaryImg, CV_MOP_CLOSE, element);
-        //morphologyEx(fgMaskMOG2, testImg, CV_MOP_OPEN, element);
+        //morphologyEx(fgMaskMOG2, binaryImg, CV_MOP_OPEN, element);
 
         //Shadow delete
         //Binary
@@ -83,15 +84,15 @@ int main(int argc, char* argv[])
             //Create bounding rect of object
             //rect draw on origin image
             Rect mr= boundingRect(Mat(*itc));
-            if ( mr.height > 12 && mr.width > 6 && mr.height < 128 && mr.width < 64) {
-                rectangle(resizeBlurImg, mr, CV_RGB(255, 0, 0));
+            if( mr.height > 12 && mr.width > 6 && mr.height < 128 && mr.width < 64 ){
+                rectangle(resizeImg, mr, CV_RGB(255,0,0));
             }
             ++itc;
         }
 
         //Display
         imshow("Shadow_Removed", binaryImg);
-        imshow("Blur_Resize", resizeBlurImg);
+        imshow("Result", resizeImg);
         imshow("MOG2", fgMaskMOG2);
 
         if(waitKey(17)==27)break;
